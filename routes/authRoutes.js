@@ -21,7 +21,11 @@ router.post("/register", async (req, res) => {
     // Check if the role exists in the database
     const foundRole = await Role.findOne({ name: role });
     if (!foundRole) {
-      return res.status(400).json({ message: "Invalid role (Valid Roles are: admin, user, moderator" });
+      return res
+        .status(400)
+        .json({
+          message: "Invalid role Valid Roles are: admin, user, moderator",
+        });
     }
 
     // Check if the user already exists
@@ -57,6 +61,54 @@ router.post("/register", async (req, res) => {
       message: "User created successfully",
       user: newUser,
       token: token,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Route for user login
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+      // Validation checks: Ensure all fields are provided
+    if (!email || !password) {
+      return res.status(400).json({ message: "All Fields are required!" });
+    }
+
+    // Check if the user exists or not 
+    const user = await User.findOne({ email: email }).populate("role");
+    //  if user does not exist, return error message
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Email does not exist",
+      });
+    }
+
+    // Validate password
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid password",
+      });
+    }
+
+    // Generate JWT with user details
+    const token = jwt.sign({ id: user._id, role: user.role.name }, secretKey);
+
+    res.json({
+      success: true,
+      message: "User logged in successfully",
+      token: token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role.name,
+      },
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
