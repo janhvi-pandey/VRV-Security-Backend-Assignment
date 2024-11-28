@@ -3,11 +3,12 @@ const app = express();
 const port = 3005; // you can use different port which is available(e.g. 3000,3001)
 const cors = require("cors");
 const helmet = require("helmet");
+const populateRoles = require("./scripts/populateRoles"); 
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
 dotenv.config();
-connectDB();
+connectDB(); //connect to database
 
 //Middleware Setup
 
@@ -21,6 +22,17 @@ app.use(cors());
 app.use(express.json());
 
 
+// Initialize roles in the database
+populateRoles()
+  .then(() => {
+    console.log("Roles initialized successfully.");
+  })
+  .catch((err) => {
+    console.error("Error initializing roles:", err);
+  });
+
+
+app.use("/auth", require("./routes/authRoutes"));
 // Simple route for testing
 app.use("/", (req, res) => {
   res.send("Get Ready to explore....");
