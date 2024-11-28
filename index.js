@@ -1,8 +1,13 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = 3005; // you can use different port which is available(e.g. 3000,3001)
 const cors = require("cors");
 const helmet = require("helmet");
+const dotenv = require('dotenv');
+const connectDB = require('./config/db');
+
+dotenv.config();
+connectDB();
 
 //Middleware Setup
 
@@ -18,7 +23,7 @@ app.use(express.json());
 
 // Simple route for testing
 app.use("/", (req, res) => {
-  res.send("Get Ready to explore...");
+  res.send("Get Ready to explore....");
 });
 
 
