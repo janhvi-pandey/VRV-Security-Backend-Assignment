@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
         message: "Invalid role Valid Roles are: admin, user, moderator",
       });
     }
-    
+
     // Check if the user already exists
     const existingUser = await User.findOne({ email: email });
     if (existingUser) {
@@ -45,15 +45,16 @@ router.post("/register", async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: foundRole._id, 
+      role: foundRole._id,
     });
 
     // Create a token for the user for authentication
     const token = jwt.sign(
       { id: newUser._id, role: foundRole.name },
-      secretKey
+      secretKey,
+      { expiresIn: "1h" }
     );
-    
+
     res.json({
       success: true,
       message: "User created successfully",
@@ -96,7 +97,9 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate JWT with user details
-    const token = jwt.sign({ id: user._id, role: user.role.name }, secretKey);
+    const token = jwt.sign({ id: user._id, role: user.role.name }, secretKey, {
+      expiresIn: "1h",
+    });
 
     res.json({
       success: true,
@@ -118,9 +121,9 @@ router.post("/login", async (req, res) => {
 router.post("/logout", (req, res) => {
   res.json({
     success: true,
-    message: "User logged out successfully. Please delete the token on the client-side."
+    message:
+      "User logged out successfully. Please delete the token on the client-side.", //like localStorage.removeItem('token')
   });
 });
-
 
 module.exports = router;
