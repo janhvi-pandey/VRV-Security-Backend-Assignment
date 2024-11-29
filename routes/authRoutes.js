@@ -1,4 +1,4 @@
-// Contains routes for authentication like Register, Login.
+// Contains routes for authentication like Register, Login and Logout.
 const express = require("express");
 const router = express.Router();
 const User = require("../models/userModel");
@@ -113,5 +113,14 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
+
+//Route for user logout
+router.post("/logout", (req, res) => {
+  res.json({
+    success: true,
+    message: "User logged out successfully. Please delete the token on the client-side."
+  });
+});
+
 
 module.exports = router;
