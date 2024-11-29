@@ -21,11 +21,9 @@ router.post("/register", async (req, res) => {
     // Check if the role exists in the database
     const foundRole = await Role.findOne({ name: role });
     if (!foundRole) {
-      return res
-        .status(400)
-        .json({
-          message: "Invalid role Valid Roles are: admin, user, moderator",
-        });
+      return res.status(400).json({
+        message: "Invalid role Valid Roles are: admin, user, moderator",
+      });
     }
 
     // Check if the user already exists
@@ -55,7 +53,7 @@ router.post("/register", async (req, res) => {
       { id: newUser._id, role: foundRole.name },
       secretKey
     );
-
+    console.log(token);
     res.json({
       success: true,
       message: "User created successfully",
@@ -67,17 +65,18 @@ router.post("/register", async (req, res) => {
   }
 });
 
+
 // Route for user login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-      // Validation checks: Ensure all fields are provided
+    // Validation checks: Ensure all fields are provided
     if (!email || !password) {
       return res.status(400).json({ message: "All Fields are required!" });
     }
 
-    // Check if the user exists or not 
+    // Check if the user exists or not
     const user = await User.findOne({ email: email }).populate("role");
     //  if user does not exist, return error message
     if (!user) {
