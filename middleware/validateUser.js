@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
 
 const secretKey = process.env.SECRET_KEY || "secret-key";
 
@@ -25,7 +24,7 @@ const validateUser = async (req, res, next) => {
     // Proceed to the next route handler
     next();
   } catch (error) {
-    
+
     // Return an error response if token verification fails
     console.log("Error validating user:", error);
     return res.status(500).json({ verified: false, message: "Failed to authenticate token" });
