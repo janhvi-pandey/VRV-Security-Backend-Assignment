@@ -15,9 +15,8 @@ router.get("/:role-details", validateUser, async (req, res) => {
 
     // Extract role from validated token
     const userRole = req.user.role;
-    console.log(requestedRole, userRole);
 
-    // Ensure the user is authorized to access the requested role's details
+    // Check if the user is authorized to access the requested role's details
     if (requestedRole !== userRole) {
       return res.status(403).json({
         success: false,
@@ -25,7 +24,7 @@ router.get("/:role-details", validateUser, async (req, res) => {
       });
     }
 
-    // Fetch user details from the database and populate the role
+    // Fetch user details from the database
     const user = await User.findById(req.user.id)
       .select("-password") // Exclude the password from the response
       .populate("role", "name permissions"); // Populate the 'role' field to get role details
@@ -36,7 +35,7 @@ router.get("/:role-details", validateUser, async (req, res) => {
         message: "User not found",
       });
     }
-    console.log(user);
+
     // If user is found, return the user data along with their role details
     res.status(200).json({
       success: true,
