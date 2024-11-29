@@ -20,7 +20,6 @@ async function populateRoles() {
     console.log("Roles initialized successfully.");
   } catch (error) {
     console.error("Error populating roles:", error);
-    throw error;
   }
 }
 

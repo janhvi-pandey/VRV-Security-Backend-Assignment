@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
         message: "Invalid role Valid Roles are: admin, user, moderator",
       });
     }
-
+    
     // Check if the user already exists
     const existingUser = await User.findOne({ email: email });
     if (existingUser) {
@@ -45,7 +45,7 @@ router.post("/register", async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: foundRole._id, // Save the role's ObjectId in the user model
+      role: foundRole._id, 
     });
 
     // Create a token for the user for authentication
@@ -53,7 +53,7 @@ router.post("/register", async (req, res) => {
       { id: newUser._id, role: foundRole.name },
       secretKey
     );
-    console.log(token);
+    
     res.json({
       success: true,
       message: "User created successfully",
